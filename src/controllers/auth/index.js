@@ -58,9 +58,11 @@ export const signUp = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log("🚀 ~ login ~ email:", req.body);
 
     await connectToMongoDB();
     const user = await User.findOne({ email });
+    console.log("🚀 ~ login ~ user:", user);
 
     if (user) {
       const isPasswordValid = await compare(password, user.password);
@@ -83,6 +85,7 @@ export const login = async (req, res) => {
     res.status(500).json({ errors });
   }
 };
+console.log("🚀 ~ login ~ login:", login);
 export const logout = async (req, res) => {
   try {
     res.status(200).json({
