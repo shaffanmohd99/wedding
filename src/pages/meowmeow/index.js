@@ -14,7 +14,6 @@ import EditDialog from "./component/EditDialog";
 import { useQuery } from "react-query";
 import { getAttendence, logout } from "../../api-call/meowmeow";
 import { useRouter } from "next/router";
-import axios from "@/lib/axios";
 
 export default function MeowMeow() {
   const [openDeletedialog, setOpenDeletedialog] = useState(false);
@@ -51,7 +50,6 @@ export default function MeowMeow() {
 
   // const router = useRouter();
   // const [isLoading, setIsLoading] = useState(false);
-  const [fetchedData, setFetchedData] = useState();
   const [search, setSearch] = useState("");
   const [searchTimeout, setSearchTimeout] = useState();
 
@@ -84,9 +82,9 @@ export default function MeowMeow() {
   const cookies = new Cookies();
   const router = useRouter();
   const signOut = async () => {
-    const response = await axios.get(`/auth/logout`);
+    const response = await logout();
     console.log(response);
-    if (response.data.message === "successful logout") {
+    if (response.message === "successful logout") {
       cookies.remove("basyToken");
       router.push("/login");
     }

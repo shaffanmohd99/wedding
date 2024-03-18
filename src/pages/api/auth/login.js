@@ -21,10 +21,7 @@ export default async function handler(req, res) {
     try {
       await connectToMongoDB();
       const { email, password } = req.body;
-      console.log("🚀 ~ login ~ email:", req.body);
-
       const user = await User.findOne({ email });
-      console.log("🚀 ~ login ~ user:", user);
 
       if (user) {
         const isPasswordValid = await compare(password, user.password);
