@@ -7,7 +7,8 @@ export async function middleware(req) {
 
   if (req.nextUrl.pathname.startsWith("/api/getAttendance")) {
     // Extract the Authorization header from the req headers
-    const key = new TextEncoder().encode("yebaebdbaue");
+    const key_env = process.env.SECRET_KEY;
+    const key = new TextEncoder().encode(key_env);
 
     if (authorizationHeader) {
       // Check if the Authorization header starts with "Bearer "

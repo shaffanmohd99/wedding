@@ -26,7 +26,8 @@ const handleError = (err) => {
 const maxAge = 7 * 24 * 60 * 60;
 
 const createToken = async (id) => {
-  const key = new TextEncoder().encode("yebaebdbaue");
+  const key_env = process.env.SECRET_KEY;
+  const key = new TextEncoder().encode(key_env);
   const jwt = await new SignJWT({ id })
     .setProtectedHeader({ alg: "HS256" }) // algorithm
     .setExpirationTime("30days")
