@@ -85,7 +85,6 @@ export const login = async (req, res) => {
     res.status(500).json({ errors });
   }
 };
-console.log("🚀 ~ login ~ login:", login);
 export const logout = async (req, res) => {
   try {
     res.status(200).json({
