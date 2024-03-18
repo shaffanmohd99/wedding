@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "react-query";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { login } from "./api";
+import { login } from "./api-call";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
