@@ -8,7 +8,6 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "react-query";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { login } from "../../api-call/auth";
 import axios from "@/lib/axios";
 
 
