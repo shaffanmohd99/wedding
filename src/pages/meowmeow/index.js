@@ -12,7 +12,7 @@ import AttendanceDialog from "../home/component/AttendanceDialog";
 import { TbEdit } from "react-icons/tb";
 import EditDialog from "./component/EditDialog";
 import { useQuery } from "react-query";
-import { getAttendence, logout } from "./api-call";
+import { getAttendence, logout } from "./component/ApiCall";
 import { useRouter } from "next/router";
 
 export default function MeowMeow() {
