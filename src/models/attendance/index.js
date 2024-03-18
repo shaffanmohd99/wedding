@@ -7,6 +7,7 @@ const attendanceSchema = new mongoose.Schema({
   attendance: { type: Boolean, default: false },
 });
 
+// must be singular , in mongodb it will be automaically plural
 const Attendance = mongoose.model("Attendance", attendanceSchema);
 
 export default Attendance;

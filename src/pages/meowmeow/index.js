@@ -2,7 +2,7 @@ import Pagination from "@/components/reuseable/Pagination";
 import Skeleton from "@/components/reuseable/Skeleton";
 import { BsSearch } from "react-icons/bs";
 import { useEffect, useState } from "react";
-import Typography from "@/components/reuseable/Typography";
+import Cookies from "universal-cookie";
 import { FaTrashAlt } from "react-icons/fa";
 import DeleteDialog from "./component/DeleteDialog";
 import Snackbar from "@/components/reuseable/Snackbar";
@@ -11,6 +11,9 @@ import { CiCirclePlus } from "react-icons/ci";
 import AttendanceDialog from "../home/component/AttendanceDialog";
 import { TbEdit } from "react-icons/tb";
 import EditDialog from "./component/EditDialog";
+import { useQuery } from "react-query";
+import { getAttendence, logout } from "./api";
+import { useRouter } from "next/router";
 
 export default function MeowMeow() {
   const [openDeletedialog, setOpenDeletedialog] = useState(false);
@@ -46,7 +49,7 @@ export default function MeowMeow() {
   };
 
   // const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [fetchedData, setFetchedData] = useState();
   const [search, setSearch] = useState("");
   const [searchTimeout, setSearchTimeout] = useState();
@@ -77,47 +80,23 @@ export default function MeowMeow() {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerCurrentPage, setRowsPerCurrentPage] = useState(10);
 
-  const fetchData = async () => {
-    setIsLoading(true);
-
-    if (typeof window !== "undefined") {
-      try {
-        const response = await fetch(
-          `/api/getAttendance?page=${currentPage}&rowsPerPage=${rowsPerCurrentPage}${search}`
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setIsLoading(false);
-          setFetchedData(data);
-
-          // Do something with the fetched data, if needed
-        } else {
-          setIsLoading(false);
-
-          console.log("Something went wrong!");
-        }
-      } catch (error) {
-        setIsLoading(false);
-
-        console.error("Error making API call:", error);
-      }
+  const cookies = new Cookies();
+  const router = useRouter();
+  const signOut = async () => {
+    const response = await logout();
+    console.log(response.status);
+    if (response.message === "successful logout") {
+      cookies.remove("basyToken");
+      router.push("/login");
     }
   };
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        await fetchData();
-        // Do something after the data is fetched, if needed
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    getData();
-  }, [rowsPerCurrentPage, currentPage, search]);
-
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["getAttendence", currentPage, rowsPerCurrentPage, search],
+    queryFn: () => getAttendence(currentPage, rowsPerCurrentPage, search),
+  });
+  const attendanceData = data?.data;
+  const pagination = data?.pagination;
   return (
     <div className="flex justify-center items-center bg-[#faf7f2] ">
       <div className="w-full ">
@@ -125,9 +104,19 @@ export default function MeowMeow() {
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="sm:flex sm:items-center">
               <div className="sm:flex-auto">
-                <h1 className="text-xl font-semibold text-gray-900">
-                  Guestlist
-                </h1>
+                <div className="flex gap-4 items-center">
+                  <h1 className="text-xl font-semibold text-gray-900">
+                    Guestlist
+                  </h1>
+                  <Button
+                    width=""
+                    onClick={signOut}
+                    variant="outlined"
+                    styles=" flex justify-center items-center"
+                  >
+                    Logout
+                  </Button>
+                </div>
                 <p className="mt-2 text-sm text-gray-700">
                   A list of all the guest that answered to the form.
                 </p>
@@ -221,7 +210,7 @@ export default function MeowMeow() {
                           </tr>
                         </tbody>
                       )}
-                      {fetchedData?.data?.length < 1 && !isLoading && (
+                      {attendanceData?.length < 1 && !isLoading && (
                         <tbody className="divide-y divide-gray-200 bg-white">
                           <tr>
                             <td
@@ -235,9 +224,9 @@ export default function MeowMeow() {
                           </tr>
                         </tbody>
                       )}
-                      {fetchedData?.data?.length > 0 && !isLoading && (
+                      {attendanceData?.length > 0 && !isLoading && (
                         <tbody className="divide-y divide-gray-200 bg-white">
-                          {fetchedData?.data?.map((item, index) => (
+                          {attendanceData?.map((item, index) => (
                             <tr key={index}>
                               <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                                 {item.name}
@@ -272,12 +261,12 @@ export default function MeowMeow() {
                         </tbody>
                       )}
                     </table>
-                    {fetchedData?.data?.length > 0 && !isLoading && (
+                    {attendanceData?.length > 0 && !isLoading && (
                       <Pagination
-                        count={fetchedData?.pagination?.totalDocuments}
-                        lastPage={fetchedData?.pagination?.totalPages}
-                        from={fetchedData?.pagination?.from}
-                        to={fetchedData?.pagination?.to}
+                        count={pagination?.totalDocuments}
+                        lastPage={pagination?.totalPages}
+                        from={pagination?.from}
+                        to={pagination?.to}
                         pages={currentPage}
                         rows={rowsPerCurrentPage}
                         setPages={setCurrentPage}

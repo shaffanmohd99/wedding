@@ -1,11 +1,23 @@
 // // models/user.js
-// import mongoose from "mongoose";
+import { hash } from "bcrypt";
+import mongoose from "mongoose";
 
-// const userSchema = new mongoose.Schema({
-//   email: { type: String, required: true, unique: true },
-//   password: { type: String, required: true },
-// });
+const userSchema = new mongoose.Schema({
+  email: { type: String, required: [true, "Email is required"], unique: true },
+  password: {
+    type: String,
+    required: [true, "Password is required"],
+    minlength: [6, "Must be atleast 6 character"],
+  },
+});
 
-// const userSchema = mongoose.model("User", userSchema);
+// middleware for before user is saved
+userSchema.pre("save", async function (next) {
+  this.password = await hash(this.password, 10);
+  next();
+});
 
-// export default User;
+// must be singular , in mongodb it will be automaically plural
+const User = mongoose.models.User || mongoose.model("User", userSchema);
+
+export default User;

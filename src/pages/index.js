@@ -13,9 +13,7 @@ export default function Home() {
   return (
     <div className="flex justify-center items-center bg-[#faf7f2] ">
       <Head>
-        <title>
-          Solemnization of Shaffan & Basyirah
-        </title>
+        <title>Solemnization of Shaffan & Basyirah</title>
         <meta
           name="description"
           content="22nd December 2022 | Bangi,Selangor"
