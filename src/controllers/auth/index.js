@@ -67,13 +67,13 @@ export const login = async (req, res) => {
     if (user) {
       const isPasswordValid = await compare(password, user.password);
       if (isPasswordValid) {
-        const token = await createToken(user._id);
+        // const token = await createToken(user._id);
         res.status(200).json({
           message: "successful login",
           data: {
             id: user.id,
             email: user.email,
-            token,
+            // token,
           },
         });
       }
