@@ -9,6 +9,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "react-query";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { login } from "../../api-call/auth";
+import axios from "@/lib/axios";
+
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -38,19 +40,22 @@ export default function LoginPage() {
     resolver: yupResolver(schema),
   });
 
-  const { mutate, isLoading } = useMutation((value) => login(value), {
-    onSuccess: (response) => {
-      setErrorPassword("");
-      router.push({
-        pathname: "/meowmeow",
-        // query: { page: 1, row: 10 },
-      });
-    },
-    onError: (error) => {
-      console.log(error);
-      setErrorPassword("Wrong username or password");
-    },
-  });
+  const { mutate, isLoading } = useMutation(
+    (data) => axios.post(`/auth/login`, data),
+    {
+      onSuccess: (response) => {
+        setErrorPassword("");
+        router.push({
+          pathname: "/meowmeow",
+          // query: { page: 1, row: 10 },
+        });
+      },
+      onError: (error) => {
+        console.log(error);
+        setErrorPassword("Wrong username or password");
+      },
+    }
+  );
   const onSubmit = (data) => {
     mutate(data);
   };

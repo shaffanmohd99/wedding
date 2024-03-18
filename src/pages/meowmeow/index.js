@@ -83,7 +83,7 @@ export default function MeowMeow() {
   const cookies = new Cookies();
   const router = useRouter();
   const signOut = async () => {
-    const response = await logout();
+    const response = await axios.get(`/auth/logout`);
     console.log(response.status);
     if (response.message === "successful logout") {
       cookies.remove("basyToken");
